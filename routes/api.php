@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/posts', [postController::class, 'get']);
 
-Route::get('/posts/{id}', [postController::class, 'get']);
+Route::get('/posts/{id}', [postController::class, 'getById']);
 
 Route::post('/posts', [postController::class, 'post']);
 

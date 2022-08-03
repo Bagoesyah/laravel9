@@ -58,7 +58,7 @@ class postController extends Controller
             $post->save();
             return response()->json(
                 [
-                    "message" => "put method success",
+                    "message" => "update" . " " . $id . " " . "success",
                     "data" =>  $post
                 ]
             );
@@ -66,7 +66,7 @@ class postController extends Controller
         else {
             return response()->json(
                 [
-                    "message" => "post with id" . $id . "not found"
+                    "message" => "post with id" . " " . $id . " " . "not found"
                 ], $status = 400
             );
         }
@@ -74,18 +74,19 @@ class postController extends Controller
     }
     function delete($id)
     {
-        $post = post::find('id', $id);
+        $post = post::where('id', $id)->first();
         if($post){
+            $post->delete();
             return response()->json(
                 [
-                    "message" => "delete success" . $id
+                    "message" => "delete product id" . " " . $id . " " . "success"
                 ]
             );
         }
         else{
             return response()->json(
                 [
-                    "message" => "post with id" . $id . "not found"
+                    "message" => "post with id" . " " . $id . " " . "not found"
                 ], $status = 400
             );
         }
