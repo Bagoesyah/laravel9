@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\API\postapiController;
+use App\Http\Controllers\postController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,7 +15,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('postapi', [postapiController::class, 'index']);
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/posts', [postController::class, 'get']);
+
+Route::get('/posts/{id}', [postController::class, 'get']);
+
+Route::post('/posts', [postController::class, 'post']);
+
+Route::put('/posts/{id}', [postController::class, 'put']);
+
+Route::delete('/posts/{id}', [postController::class, 'delete']);
+
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
