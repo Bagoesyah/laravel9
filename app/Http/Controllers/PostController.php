@@ -3,16 +3,32 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use App\Models\post;
+use Illuminate\Support\Facades\DB;
+use App\Models\Post;
 
-class postController extends Controller
+class PostController extends Controller
 {
+    //Post Create
     function post(Request $request)
     {
+
+        $validate = Validator::make($request->all(), [
+            'title' => 'required|unique:posts,title',
+            'author' => 'required',
+            'content' => 'required'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                "message" => $validate->messages()
+            ]);
+        }
+
         $post = new post;
         $post->title = $request->title;
-        $post->url_post = Str::slug($request->title);
+        $post->url_key = Str::slug(rand());
         $post->content = $request->content;
         $post->author = $request->author;
 
@@ -25,9 +41,12 @@ class postController extends Controller
             ]
         );
     }
-    function get()
+
+
+    //Post List
+    public function get()
     {
-        $data = post::all();
+        $data = DB::table('posts')->simplePaginate(15);
 
         return response()->json(
             [
@@ -36,30 +55,34 @@ class postController extends Controller
             ]
         );
     }
-    function getById($id)
+
+    //Post Detail
+    public function show($id)
     {
-        $data = post::where('id', $id)->get();
+        $Post = Post::where('id', $id)->first();
 
         return response()->json(
             [
                 "message" => "success",
-                "data" => $data
+                "data" => $Post
             ]
         );
     }
-    function put($id, Request $request)
-    {
-        $post = post::where('id', $id)->first();
-        if($post){
-            $post->title = $request->title ? $request->title : $post->title;
-            $post->content = $request->content ? $request->content : $post->content;
-            $post->author = $request->author ? $request->author : $post->author;
 
-            $post->save();
+    //Post Update
+    public function edit($id, Request $request)
+    {
+        $Post = Post::where('id', $id)->first();
+        if($Post){
+            $Post->title = $request->title ? $request->title : $Post->title;
+            $Post->content = $request->content ? $request->content : $Post->content;
+            $Post->author = $request->author ? $request->author : $Post->author;
+
+            $Post->save();
             return response()->json(
                 [
                     "message" => "update" . " " . $id . " " . "success",
-                    "data" =>  $post
+                    "data" =>  $Post
                 ]
             );
         }
@@ -72,11 +95,13 @@ class postController extends Controller
         }
 
     }
-    function delete($id)
+
+    //Post Delete
+    public function delete($id)
     {
-        $post = post::where('id', $id)->first();
-        if($post){
-            $post->delete();
+        $Post = Post::where('id', $id)->first();
+        if($Post){
+            $Post->delete();
             return response()->json(
                 [
                     "message" => "delete product id" . " " . $id . " " . "success"
