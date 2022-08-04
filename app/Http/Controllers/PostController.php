@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
 
 class PostController extends Controller
@@ -15,9 +16,9 @@ class PostController extends Controller
     {
 
         $validate = Validator::make($request->all(), [
-            'title' => 'required|unique:posts,title',
-            'author' => 'required',
-            'content' => 'required'
+            'title' => 'required',
+            'content' => 'required',
+            'author' => 'required'
         ]);
 
         if ($validate->fails()) {
@@ -46,7 +47,7 @@ class PostController extends Controller
     //Post List
     public function get()
     {
-        $data = DB::table('posts')->simplePaginate(15);
+        $data = DB::table('posts')->simplePaginate(1);
 
         return response()->json(
             [
