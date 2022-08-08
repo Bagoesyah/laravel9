@@ -19,6 +19,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('register', 'App\Http\Controllers\API\RegisterController@register');
+Route::post('login', 'App\Http\Controllers\API\RegisterController@login');
+Route::middleware('auth:api')->group( function () {
+    Route::resource('products', 'API\ProductController');
+    });
+
 //create
 Route::post('/posts/create', [PostController::class, 'post']);
 
@@ -48,7 +54,7 @@ Route::put('/posts/{id}', function ($id, Request $request) {
         $post->save();
         return response()->json(
             [
-                "message" => "update" . " " . $id . " " . "success",
+                "message" => "update " . $id . " success",
                 "data" =>  $post
             ]
         );
@@ -56,7 +62,7 @@ Route::put('/posts/{id}', function ($id, Request $request) {
     else {
         return response()->json(
             [
-                "message" => "post with id" . " " . $id . " " . "not found"
+                "message" => "post with id " . $id . " not found"
             ], $status = 400
         );
     }
@@ -69,14 +75,14 @@ Route::delete('/posts/{id}', function ($id) {
         $post->delete();
         return response()->json(
             [
-                "message" => "delete product id" . " " . $id . " " . "success"
+                "message" => "delete product id " . $id . " success"
             ]
         );
     }
     else{
         return response()->json(
             [
-                "message" => "post with id" . " " . $id . " " . "not found"
+                "message" => "post with id " . $id . " not found"
             ], $status = 400
         );
     }

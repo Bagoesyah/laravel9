@@ -30,10 +30,9 @@ class PostController extends Controller
         // $variable = post::count();
         $post = new post;
         $post->title = $request->title;
-        $post->url_key = Str::slug($request->url_key); //. "-" . $variable + 1
+        $post->url_key = str::slug($request->url_key); //. "-" . $variable + 1
         $post->content = $request->content;
-        $post->author = $request->user()->name; //Error, Attempt to read property \"name\" on null
-
+        $post->author = auth::User()->name; //Error, Attempt to read property \"name\" on null
         $post->save();
 
         return response()->json(
@@ -46,10 +45,10 @@ class PostController extends Controller
 
 
     //Post List
-    public function get()
+    public function get(Request $request)
     {
-        $data = Post::paginate(10); //belum beres
-
+        $limit = $request->limit;
+        $data = Post::paginate($limit);
         return $data;
     }
 
