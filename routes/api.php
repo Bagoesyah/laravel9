@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\PostController;
+use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Post;
@@ -19,14 +20,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('register', 'App\Http\Controllers\API\RegisterController@register');
-Route::post('login', 'App\Http\Controllers\API\RegisterController@login');
-Route::middleware('auth:api')->group( function () {
-    Route::resource('products', 'API\ProductController');
-    });
 
-//create
-Route::post('/posts/create', [PostController::class, 'post']);
+//auth API
+Route::post('login', [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'register']);
+
+Route::group(["middleware" => "auth:sanctum"], function () {
+    Route::post('/posts/create', [PostController::class, 'post']);});
+
 
 //show all
 Route::get('/posts', [PostController::class, 'get']);

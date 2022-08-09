@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Contracts\Support\Jsonable;
 use App\Models\Post;
 
 class PostController extends Controller
@@ -27,12 +27,12 @@ class PostController extends Controller
             ]);
         }
 
-        // $variable = post::count();
         $post = new post;
         $post->title = $request->title;
-        $post->url_key = str::slug($request->url_key); //. "-" . $variable + 1
+        $post->url_key = str::slug($request->url_key);
         $post->content = $request->content;
-        $post->author = auth::User()->name; //Error, Attempt to read property \"name\" on null
+        $post->author = $request->author === null ? Auth::user()->name : $request->author;
+
         $post->save();
 
         return response()->json(
