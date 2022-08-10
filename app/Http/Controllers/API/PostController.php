@@ -12,7 +12,7 @@ use App\Models\Post;
 class PostController extends Controller
 {
     //Post Create
-    function post(Request $request)
+    function article(Request $request)
     {
 
         $validate = Validator::make($request->all(), [
@@ -27,18 +27,18 @@ class PostController extends Controller
             ]);
         }
 
-        $post = new post;
-        $post->title = $request->title;
-        $post->url_key = str::slug($request->url_key);
-        $post->content = $request->content;
-        $post->author = $request->author === null ? Auth::user()->name : $request->author;
+        $Post = new Post;
+        $Post->title = $request->title;
+        $Post->url_key = str::slug($request->url_key);
+        $Post->content = $request->content;
+        $Post->author = $request->author === null ? Auth::user()->name : $request->author;
 
-        $post->save();
+        $Post->save();
 
         return response()->json(
             [
                 "message" => "success",
-                "data" => $post
+                "data" => $Post
             ]
         );
     }
