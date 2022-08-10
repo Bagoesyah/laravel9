@@ -25,8 +25,6 @@ return new class extends Migration
      */
     public function down()
     {
-        // Schema::table('posts', function (Blueprint $table) {
-        //     $table->renameColumn('url_key','url_post');
-        // });
+        Schema::dropIfExists('posts');
     }
 };
