@@ -17,7 +17,7 @@ class PostController extends Controller
 
         $validate = Validator::make($request->all(), [
             'title' => 'required',
-            'urk_key' => 'unique:posts,author',
+            'url_key' => 'unique:posts,author',
             'content' => 'required',
         ]);
 
