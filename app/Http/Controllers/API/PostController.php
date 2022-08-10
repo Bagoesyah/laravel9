@@ -12,12 +12,12 @@ use App\Models\Post;
 class PostController extends Controller
 {
     //Post Create
-    function article(Request $request)
+    function post(Request $request)
     {
 
         $validate = Validator::make($request->all(), [
             'title' => 'required',
-            'url_key' => 'unique:posts,author',
+            'url_key' => 'unique:post,author',
             'content' => 'required',
         ]);
 
