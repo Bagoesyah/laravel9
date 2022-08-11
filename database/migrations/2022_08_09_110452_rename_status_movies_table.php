@@ -13,9 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        // Schema::table('posts', function (Blueprint $table) {
-        //     $table->renameColumn('url_post','url_key');
-        //  });
+        // Schema::rename('post', 'posts');
     }
 
     /**
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down()
     {
-        // Schema::dropIfExists('posts');
+        // Schema::rename('posts', 'post');
     }
 };
