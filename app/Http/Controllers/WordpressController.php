@@ -47,14 +47,11 @@ class WordpressController extends Controller
         $post->url_key = $data->url_key;
         $post->featured_image = $this->featuredImage($data->_embedded);
         $post->featured = ($data->sticky) ? 1 : null;
-        $post->excerpt = $data->excerpt->rendered;
         $post->content = $data->content->rendered;
-        $post->format = $data->format;
         $post->publishes_at = $this->carbonDate($data->date);
         $post->created_at = $this->carbonDate($data->date);
         $post->updated_at = $this->carbonDate($data->modified);
         $post->save();
-        $this->syncTags($post, $data->_embedded->{"wp:term"});
         return $post;
     }
 
@@ -68,11 +65,4 @@ class WordpressController extends Controller
         }
         return null;
         }
-    private function syncTags(Post $post, $tags)
-    {
-        $tags = collect($tags)->collapse()->where('taxonomy', 'post_tag')->pluck('name')->toArray();
-        if (count($tags) > 0) {
-            $post->setTags($tags);
-        }
-    }
 }

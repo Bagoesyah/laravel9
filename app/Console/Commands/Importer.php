@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Http\Controllers\WordpressController;
 
 class Importer extends Command
 {
@@ -28,6 +29,6 @@ class Importer extends Command
     public function handle()
     {
         $page = ($this->argument('page')) ? $this->argument('page') : 1;
-        $this->wpApi->importPosts($page);
+        $this->WordpressController->importPosts($page);
     }
 }
