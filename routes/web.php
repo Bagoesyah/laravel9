@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\API\PostController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -35,4 +36,8 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::get('/sendmail', [EmailController::class, 'sendEmail']);
+// Route::get('/', [PostController::class, 'editor'])->name( 'editor' );
+// Route::get('/update', [PostController::class, 'upload_post'])->name( 'upload_post' );
+// Route::get( '/', 'PostController@editor' )->name( 'editor' );
+// Route::post( '/update', 'PostController@upload_post' )->name( 'upload_post' );
+// Route::get('/sendmail', [EmailController::class, 'sendEmail']);

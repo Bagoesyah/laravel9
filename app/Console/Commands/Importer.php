@@ -4,14 +4,14 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class HelloWorldCommand extends Command
+class Importer extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'hello:world';
+    protected $signature = 'command:name';
 
     /**
      * The console command description.
@@ -27,7 +27,7 @@ class HelloWorldCommand extends Command
      */
     public function handle()
     {
-        info('hello world');
-        return 0;
+        $page = ($this->argument('page')) ? $this->argument('page') : 1;
+        $this->wpApi->importPosts($page);
     }
 }
