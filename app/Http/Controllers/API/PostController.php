@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
+use Illuminate\Support\Facades\Http;
 
 class PostController extends Controller
 {
@@ -33,12 +34,21 @@ class PostController extends Controller
             "author" => $request->author === null ? Auth::user()->name : $request->author,
         ]);
 
-        return response()->json(
-            [
-                "message" => "success",
-                "data" => $post
-            ]
-        );
+        // return response()->json(
+        //     [
+        //         "message" => "success",
+        //         "data" => $post
+        //     ]
+        // );
+
+        //ngirim data, guuzle
+        return Http::retry(3, 100)->post('http://wordpress.local/wp-json/wp/v2/posts', [
+            'title' => $post,
+            'url_key' => $post,
+            'content' => $post,
+            'author' => $post,
+        ]);
+
     }
 
 

@@ -45,24 +45,12 @@ class WordpressController extends Controller
         $post->user_id = $this->getAuthor($data->_embedded->author);
         $post->title = $data->title->rendered;
         $post->url_key = $data->url_key;
-        $post->featured_image = $this->featuredImage($data->_embedded);
         $post->featured = ($data->sticky) ? 1 : null;
         $post->content = $data->content->rendered;
-        $post->publishes_at = $this->carbonDate($data->date);
         $post->created_at = $this->carbonDate($data->date);
         $post->updated_at = $this->carbonDate($data->modified);
         $post->save();
         return $post;
     }
 
-    public function featuredImage($data)
-    {
-        if (property_exists($data, "wp:featuredmedia")) {
-            $data = head($data->{"wp:featuredmedia"});
-            if (isset($data->source_url)) {
-                return $data->source_url;
-            }
-        }
-        return null;
-        }
 }
