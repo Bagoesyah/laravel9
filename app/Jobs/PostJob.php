@@ -37,7 +37,7 @@ class CustomerJob implements ShouldQueue
              // The task succeeded...
          })
          ->onFailure(function () {
-             // The task failed...
+            // The task failure...
          });
 
         // $page = ($this->argument('page')) ? $this->argument('page') : 1;
@@ -45,8 +45,7 @@ class CustomerJob implements ShouldQueue
 
         // $schedule->command('emails:send')
         //  ->daily()
-        //  ->pingOnFailure($failureUrl);
+        //  ->pingOnFailure($failureUrl)
         //  ->runInBackground();
-        //  * * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
     }
 }

@@ -34,12 +34,6 @@ class PostController extends Controller
             "author" => $request->author === null ? Auth::user()->name : $request->author,
         ]);
 
-        // return response()->json(
-        //     [
-        //         "message" => "success",
-        //         "data" => $post
-        //     ]
-        // );
 
         //ngirim data, guuzle
         return Http::retry(3, 100)->post('http://wordpress.local/wp-json/wp/v2/posts', [
@@ -49,6 +43,12 @@ class PostController extends Controller
             'author' => $post,
         ]);
 
+        return response()->json(
+            [
+                "message" => "success",
+                "data" => $post
+            ]
+        );
     }
 
 
@@ -58,6 +58,13 @@ class PostController extends Controller
         $limit = $request->limit;
         $data = Post::paginate($limit);
         return $data;
+        //ngirim data, guuzle
+        return Http::retry(3, 100)->get('http://wordpress.local/wp-json/wp/v2/posts', [
+            'title' => $data,
+            'url_key' => $data,
+            'content' => $data,
+            'author' => $data,
+        ]);
     }
 
     // Post Detail
@@ -70,6 +77,12 @@ class PostController extends Controller
                 "data" => $post
             ]
         );
+        return Http::retry(3, 100)->get('http://wordpress.local/wp-json/wp/v2/posts/<id>?id', [
+            'title' => $post,
+            'url_key' => $post,
+            'content' => $post,
+            'author' => $post,
+        ]);
     }
 
     // Post Update
@@ -87,6 +100,12 @@ class PostController extends Controller
                     "data" =>  $post
                 ]
             );
+            return Http::retry(3, 100)->put('http://wordpress.local/wp-json/wp/v2/posts/<id>', [
+                'title' => $post,
+                'url_key' => $post,
+                'content' => $post,
+                'author' => $post,
+            ]);
         }
         else {
             return response()->json(
@@ -107,6 +126,12 @@ class PostController extends Controller
                     "message" => "delete product id " . $id . " success"
                 ]
             );
+            return Http::retry(3, 100)->delete('http://wordpress.local/wp-json/wp/v2/posts/<id>?id', [
+                'title' => $post,
+                'url_key' => $post,
+                'content' => $post,
+                'author' => $post,
+            ]);
         }
         else{
             return response()->json(
