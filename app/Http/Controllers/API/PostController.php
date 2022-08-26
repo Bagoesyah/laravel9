@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Http;
 
 class PostController extends Controller
 {
+    public $wpurl;
+    public function __construct()
+    {
+        $this->wpurl = env('WORDPRESS_URL', 'wordpress.local');
+    }
     // Post Create
     function post(Request $request)
     {
@@ -34,9 +39,8 @@ class PostController extends Controller
             "author" => $request->author === null ? Auth::user()->name : $request->author,
         ]);
 
-
         //ngirim data, guuzle
-        return Http::retry(3, 100)->post('http://wordpress.local/wp-json/wp/v2/posts', [
+        Http::post($this->wpurl . 'wp-json/wp/v2/posts', [
             'title' => $post,
             'url_key' => $post,
             'content' => $post,
@@ -57,32 +61,32 @@ class PostController extends Controller
     {
         $limit = $request->limit;
         $data = Post::paginate($limit);
-        return $data;
         //ngirim data, guuzle
-        return Http::retry(3, 100)->get('http://wordpress.local/wp-json/wp/v2/posts', [
+        Http::get($this->wpurl . 'wp-json/wp/v2/posts', [
             'title' => $data,
             'url_key' => $data,
             'content' => $data,
             'author' => $data,
         ]);
+        return $data;
     }
 
     // Post Detail
     public function show($id) {
         $post = Post::find($id);
 
+        Http::get($this->wpurl . 'wp-json/wp/v2/posts/<id>?id', [
+            'title' => $post,
+            'url_key' => $post,
+            'content' => $post,
+            'author' => $post,
+        ]);
         return response()->json(
             [
                 "message" => "success",
                 "data" => $post
             ]
         );
-        return Http::retry(3, 100)->get('http://wordpress.local/wp-json/wp/v2/posts/<id>?id', [
-            'title' => $post,
-            'url_key' => $post,
-            'content' => $post,
-            'author' => $post,
-        ]);
     }
 
     // Post Update
@@ -94,18 +98,18 @@ class PostController extends Controller
             $post->author = $request->author ? $request->author : $post->author;
 
             $post->save();
+            Http::put($this->wpurl . 'wp-json/wp/v2/posts/<id>', [
+                'title' => $post,
+                'url_key' => $post,
+                'content' => $post,
+                'author' => $post,
+            ]);
             return response()->json(
                 [
                     "message" => "update " . $id . " success",
                     "data" =>  $post
                 ]
             );
-            return Http::retry(3, 100)->put('http://wordpress.local/wp-json/wp/v2/posts/<id>', [
-                'title' => $post,
-                'url_key' => $post,
-                'content' => $post,
-                'author' => $post,
-            ]);
         }
         else {
             return response()->json(
@@ -120,18 +124,18 @@ class PostController extends Controller
     public function delete($id) {
         $post = Post::where('id', $id)->first();
         if($post){
+            Http::delete($this->wpurl . 'wp-json/wp/v2/posts/<id>?id', [
+                'title' => $post,
+                'url_key' => $post,
+                'content' => $post,
+                'author' => $post,
+            ]);
             $post->delete();
             return response()->json(
                 [
                     "message" => "delete product id " . $id . " success"
                 ]
             );
-            return Http::retry(3, 100)->delete('http://wordpress.local/wp-json/wp/v2/posts/<id>?id', [
-                'title' => $post,
-                'url_key' => $post,
-                'content' => $post,
-                'author' => $post,
-            ]);
         }
         else{
             return response()->json(
