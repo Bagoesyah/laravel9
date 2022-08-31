@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
 
 class PostController extends Controller
@@ -38,21 +39,38 @@ class PostController extends Controller
             "content" => $request->content,
             "author" => $request->author === null ? Auth::user()->name : $request->author,
         ]);
+        $this->postWordpress($post->title, $post->url_key, $post->content, $post->author);
 
         //ngirim data, guuzle
-        Http::post($this->wpurl . 'wp-json/wp/v2/posts', [
-            'title' => $post,
-            'url_key' => $post,
-            'content' => $post,
-            'author' => $post,
-        ]);
+        // Http::post($this->wpurl . 'wp-json/wp/v2/posts');
 
-        return response()->json(
-            [
-                "message" => "success",
-                "data" => $post
-            ]
-        );
+        return redirect('/')->with('info', 'Article saved successfully!');
+        // return response()->json(
+        //     [
+        //         "message" => "success",
+        //         "data" => $post
+        //     ]
+        // );
+    }
+
+    // GuzzleHttp Client
+    public function postWordpress($title, $url_key, $content, ) {
+        $client = new Client([
+                'base_uri' => 'http://wordpress.local/wp-json/wp/v2/',
+                'headers' => [
+                    'Authorization' => 'Bearer GTDrt2L8EuZsNbN5ztTbAnnTK2tvji1CHkJXXUKA',
+                    'Accept' => 'application/json',
+                    'Content-type' => 'application/json'
+                ]
+            ]);
+        $response = $client->post('posts', [
+            'form_params' => [
+                'title' => $title,
+                'url_key' => $url_key,
+                'content' => $content
+            ],
+        ]);
+        $response = json_decode($response->getBody(), true);
     }
 
 
@@ -75,7 +93,7 @@ class PostController extends Controller
     public function show($id) {
         $post = Post::find($id);
 
-        Http::get($this->wpurl . 'wp-json/wp/v2/posts/<id>?id', [
+        Http::get($this->wpurl . 'wp-json/wp/v2/posts/?slug=', [
             'title' => $post,
             'url_key' => $post,
             'content' => $post,
@@ -98,7 +116,7 @@ class PostController extends Controller
             $post->author = $request->author ? $request->author : $post->author;
 
             $post->save();
-            Http::put($this->wpurl . 'wp-json/wp/v2/posts/<id>', [
+            Http::put($this->wpurl . 'wp-json/wp/v2/posts/?slug=', [
                 'title' => $post,
                 'url_key' => $post,
                 'content' => $post,
@@ -124,7 +142,7 @@ class PostController extends Controller
     public function delete($id) {
         $post = Post::where('id', $id)->first();
         if($post){
-            Http::delete($this->wpurl . 'wp-json/wp/v2/posts/<id>?id', [
+            Http::delete($this->wpurl . 'wp-json/wp/v2/posts/?slug=', [
                 'title' => $post,
                 'url_key' => $post,
                 'content' => $post,
