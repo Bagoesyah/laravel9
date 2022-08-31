@@ -44,32 +44,43 @@ class PostController extends Controller
         //ngirim data, guuzle
         // Http::post($this->wpurl . 'wp-json/wp/v2/posts');
 
-        return redirect('/')->with('info', 'Article saved successfully!');
-        // return response()->json(
-        //     [
-        //         "message" => "success",
-        //         "data" => $post
-        //     ]
-        // );
+        // return redirect('/wp-json/wp/v2/posts')->with('info', 'Article saved successfully!');
+        return response()->json(
+            [
+                "message" => "success",
+                "data" => $post
+            ]
+        );
     }
-
     // GuzzleHttp Client
     public function postWordpress($title, $url_key, $content, ) {
-        $client = new Client([
-                'base_uri' => 'http://wordpress.local/wp-json/wp/v2/',
+        // $client = new Client([
+        //         'base_uri' => 'http://wordpress.local/wp-json/wp/v2/',
+        //         'headers' => [
+        //             'Authorization' => 'YmFndXM6YmFndXMxMjM=',
+        //             'Accept' => 'application/json',
+        //             'Content-type' => 'application/json'
+        //         ]
+        //     ]);
+        // $response = $client->post('posts', [
+        //     'form_params' => [
+        //         'title' => $title,
+        //         'url_key' => $url_key,
+        //         'content' => $content
+        //     ],
+        // ]);
+        $response = Http::withHeaders([
                 'headers' => [
-                    'Authorization' => 'Bearer GTDrt2L8EuZsNbN5ztTbAnnTK2tvji1CHkJXXUKA',
+                    'Authorization' => 'YmFndXM6YmFndXMxMjM=',
                     'Accept' => 'application/json',
                     'Content-type' => 'application/json'
                 ]
-            ]);
-        $response = $client->post('posts', [
+        ])->post('http://wordpress.local/wp-json/wp/v2/posts', [
             'form_params' => [
                 'title' => $title,
                 'url_key' => $url_key,
                 'content' => $content
-            ],
-        ]);
+            ]]);
         $response = json_decode($response->getBody(), true);
     }
 
@@ -80,12 +91,7 @@ class PostController extends Controller
         $limit = $request->limit;
         $data = Post::paginate($limit);
         //ngirim data, guuzle
-        Http::get($this->wpurl . 'wp-json/wp/v2/posts', [
-            'title' => $data,
-            'url_key' => $data,
-            'content' => $data,
-            'author' => $data,
-        ]);
+        Http::get($this->wpurl . 'wp-json/wp/v2/posts');
         return $data;
     }
 
