@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('post', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger("wp_post_id");
             $table->string('title');
             $table->string('url_key');
             $table->text('content');

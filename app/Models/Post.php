@@ -13,6 +13,7 @@ class Post extends Model
         'title',
         'url_key',
         'content',
-        'author'
+        'author',
+        'wp_post_id'
     ];
 }

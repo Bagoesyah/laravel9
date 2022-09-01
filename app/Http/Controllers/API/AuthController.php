@@ -7,22 +7,38 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Http;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        //register user wordpress as author
+        $createUserWp = Http::withBasicAuth(env("API_WP_USER"), env("API_WP_PW"))->post(env("API_WP_URL") . "users", [
+            "username" => $request->name,
+            "name" => $request->name,
+            "email" => $request->email,
+            "password" => Hash::make($request->password),
+            "roles" => "author"
+        ]);
+
+        //register user to local db
+        $wpUserId = json_decode($createUserWp, true);
         $user = User::create([
             "name" => $request->name,
             "email" => $request->email,
             "password" => Hash::make($request->password),
+            "wp_user_id" => $wpUserId["id"],
         ]);
+
         $token = $user->createToken("authToken")->plainTextToken;
+
+        //show message
         return response()->json([
-            "message" => "Register Berhasil",
-            "token_access"  => $token,
+            "message" =>"register Berhasil",
+            "token_access" => $token,
             "token_type" => "bearer",
+            "wp_response" => json_decode($createUserWp),
         ]);
     }
 
