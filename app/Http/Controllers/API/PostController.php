@@ -62,6 +62,7 @@ class PostController extends Controller
             'author' => $author->wp_user_id,
         ]);
 
+
         //get post value id from wordpress db
         $wpPostId = json_decode($wpPost, true);
 
@@ -80,6 +81,10 @@ class PostController extends Controller
             "db_local" => $post,
             "db_wordpress" => json_decode($wpPost)
         ]);
+
+        if($wpPost->failed()){
+            PostJob::dispatch($wpPost)->onConnection('sync');
+        };
     }
 
     // Post Detail

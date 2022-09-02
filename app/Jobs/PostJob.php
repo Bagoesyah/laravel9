@@ -14,6 +14,8 @@ class PostJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $tries = 3;
+
     /**
      * Create a new job instance.
      *
@@ -29,23 +31,13 @@ class PostJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle($schedule)
+    public function handle()
     {
-        $schedule->command('emails:send')
-         ->daily()
-         ->onSuccess(function () {
-             // The task succeeded...
-         })
-         ->onFailure(function () {
-            // The task failure...
-         });
+        throw new \Exception('failed!');
+    }
 
-        // $page = ($this->argument('page')) ? $this->argument('page') : 1;
-        // $this->WordpressController->importPosts($page);
-
-        // $schedule->command('emails:send')
-        //  ->daily()
-        //  ->pingOnFailure($failureUrl)
-        //  ->runInBackground();
+    public function failed(\Throwable $e)
+    {
+        info('this job has failed!');
     }
 }
